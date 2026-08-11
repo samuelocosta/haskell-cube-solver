@@ -1,0 +1,24 @@
+cabal-version:      3.4
+name:               haskell-cube-solver
+version:            0.1.0.0
+build-type:         Simple
+
+common warnings
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
+
+library
+  import: warnings
+  hs-source-dirs: src
+  exposed-modules: Lib
+  build-depends:
+      base >= 4.17 && < 5
+  default-language: GHC2021
+
+executable haskell-cube-solver
+  import: warnings
+  main-is: Main.hs
+  hs-source-dirs: app
+  build-depends:
+      base >= 4.17 && < 5,
+      haskell-cube-solver
+  default-language: GHC2021
