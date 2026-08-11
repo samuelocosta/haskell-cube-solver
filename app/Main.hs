@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Lib (greet)
+import Lib (iniciar)
 
 main :: IO ()
-main = putStrLn greet
+main = iniciar

@@ -10,6 +10,11 @@ library
   import: warnings
   hs-source-dirs: src
   exposed-modules: Lib
+  other-modules:
+      Cubo.Cor
+      Cubo.Cubo
+      Cubo.Leitura
+      Cubo.Quina
   build-depends:
       base >= 4.17 && < 5
   default-language: GHC2021
