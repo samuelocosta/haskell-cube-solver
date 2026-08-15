@@ -19,6 +19,28 @@ Laranja Verde Amarelo
 Vermelho Verde Amarelo
 ```
 
+**Exemplo de orientação no TXT (descritivo das posições):**
+```text
+peça 1: esqTrasCima: corEsquerda=Laranja corTrás=Azul corCima=Branco
+peça 2: dirTrasCima: corDireita=Vermelho corTrás=Azul corCima=Branco
+peça 3: esqFrenteCima: corEsquerda=Laranja corFrente=Verde corCima=Branco
+peça 4: dirFrenteCima: corDireita=Vermelho corFrente=Verde corCima=Branco
+peça 5: esqTrasBaixo: corEsquerda=Laranja corTrás=Azul corBaixo=Amarelo
+peça 6: dirTrasBaixo: corDireita=Vermelho corTrás=Azul corBaixo=Amarelo
+peça 7: esqFrenteBaixo: corEsquerda=Laranja corFrente=Verde corBaixo=Amarelo
+peça 8: dirFrenteBaixo: corDireita=Vermelho corFrente=Verde corBaixo=Amarelo
+```
+
+**Aplicação da Ementa:**
+* **Tipos Existenciais:** Como o estado exato lido do TXT só é descoberto em tempo de execução, a leitura retorna um tipo empacotado que transita os dados do mundo inseguro (TXT) para o motor tipado.
+* **Singletons / Smart Constructors:** Uma função que recebe a `String` (ex: "Branco") e tenta promovê-la para o tipo estrito da cor.
+
+---
+
+## Fase 2: Modelagem Física da Peça (O Coração Tipado)
+Vermelho Verde Amarelo
+```
+
 **Aplicação da Ementa:**
 * **Tipos Existenciais:** Como o estado exato lido do TXT só é descoberto em tempo de execução, a leitura retorna um tipo empacotado que transita os dados do mundo inseguro (TXT) para o motor tipado.
 * **Singletons / Smart Constructors:** Uma função que recebe a `String` (ex: "Branco") e tenta promovê-la para o tipo estrito da cor.
