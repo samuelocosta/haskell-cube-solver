@@ -14,9 +14,13 @@ library
       Cubo.Cor
       Cubo.Cubo
       Cubo.Leitura
+      Cubo.Movimento
       Cubo.Quina
+      Cubo.Validacao
+      Cubo.Solver
   build-depends:
-      base >= 4.17 && < 5
+      base >= 4.17 && < 5,
+      containers >= 0.6 && < 1
   default-language: GHC2021
 
 executable haskell-cube-solver
@@ -25,5 +29,6 @@ executable haskell-cube-solver
   hs-source-dirs: app
   build-depends:
       base >= 4.17 && < 5,
+      containers >= 0.6 && < 1,
       haskell-cube-solver
   default-language: GHC2021
