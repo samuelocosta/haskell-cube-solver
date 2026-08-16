@@ -7,13 +7,13 @@
 
 ## ⏱️ Cronograma Geral
 
-| Bloco | Tempo Estimado | Tema Principal |
-| :--- | :---: | :--- |
-| **Bloco 1** | 0:00 - 0:25 (~25s) | Introdução, Contexto e Objetivo do Projeto |
-| **Bloco 2** | 0:25 - 1:00 (~35s) | Modelagem no Sistema de Tipos (GADTs, DataKinds, Existenciais) |
-| **Bloco 3** | 1:00 - 1:35 (~35s) | Geometria 3D e Validações Físicas/Matemáticas |
-| **Bloco 4** | 1:35 - 2:05 (~30s) | Motor de Movimentos e Solver BFS Bidirecional |
-| **Bloco 5** | 2:05 - 2:30 (~25s) | Demonstração Prática (Stack CLI, Testes) e Encerramento |
+| Bloco | Tempo Estimado | Tema Principal | Arquivos Relevantes |
+| :--- | :---: | :--- | :--- |
+| **Bloco 1** | 0:00 - 0:25 (~25s) | Introdução, Contexto e Objetivo do Projeto | `README.md`, `cube_viewer.py` |
+| **Bloco 2** | 0:25 - 1:00 (~35s) | Modelagem no Sistema de Tipos (GADTs, DataKinds, Existenciais) | `src/Cubo/Cor.hs`, `src/Cubo/Quina.hs` |
+| **Bloco 3** | 1:00 - 1:35 (~35s) | Geometria 3D e Validações Físicas/Matemáticas | `src/Cubo/Cubo.hs`, `src/Cubo/Validacao.hs` |
+| **Bloco 4** | 1:35 - 2:05 (~30s) | Motor de Movimentos e Solver BFS Bidirecional | `src/Cubo/Movimento.hs`, `src/Cubo/Solver.hs` |
+| **Bloco 5** | 2:05 - 2:30 (~25s) | Demonstração Prática (Stack CLI, Testes) e Encerramento | `src/Lib.hs`, `app/Main.hs`, `test/Spec.hs` |
 
 ---
 
@@ -24,9 +24,9 @@
 >
 > O objetivo do projeto foi construir um motor formal e solucionador para o **Cubo Mágico 2x2**. Mais do que apenas encontrar os movimentos de resolução, a ideia central foi usar os recursos avançados de tipos do Haskell para modelar a física do cubo, garantindo que estados impossíveis sejam barrados antes mesmo do algoritmo de busca começar."
 
-### 🎬 Sugestões Visuais para o Vídeo:
+### 🎬 Sugestões Visuais e Códigos para os Slides:
 - **0:00 - 0:10:** Slide inicial limpo com o título do projeto, seu nome, nome da disciplina e data.
-- **0:10 - 0:25:** Imagem do cubo 2x2 renderizado em 3D (gerada pelo `cube_viewer.py`) ou um pequeno vídeo/animação do cubo girando.
+- **0:10 - 0:25:** Imagem do cubo 2x2 renderizado em 3D (gerada pelo `cube_viewer.py`) ou animação do cubo girando.
 
 ---
 
@@ -41,9 +41,51 @@
 >
 > E como o estado inicial do cubo é lido de um arquivo de texto em tempo de execução, usei **Tipos Existenciais** com *Singletons* para fazer a transição segura do mundo não tipado do `IO` para o nosso motor estritamente tipado."
 
-### 🎬 Sugestões Visuais para o Vídeo:
-- **0:25 - 0:40:** Print do código de `src/Cubo/Cor.hs` destacando a `type family Oposto (cor :: Cor) :: Cor`.
-- **0:40 - 1:00:** Print do código de `src/Cubo/Quina.hs` mostrando o GADT `data Quina c1 c2 c3` e a função `validarCriacaoQuina`, com caixas ou setas destacando a segurança dos tipos.
+### 🎬 Sugestões Visuais e Códigos para os Slides:
+
+#### Código 1: Promoção de Cores, Type Families e Singletons (`src/Cubo/Cor.hs`)
+```haskell
+-- Promoção para Kinds via DataKinds
+data Cor = Branco | Amarelo | Azul | Verde | Vermelho | Laranja
+
+-- Família de tipos fechada mapeando faces diametralmente opostas
+type family Oposto (cor :: Cor) :: Cor where
+  Oposto 'Branco   = 'Amarelo
+  Oposto 'Amarelo  = 'Branco
+  Oposto 'Azul     = 'Verde
+  Oposto 'Verde    = 'Azul
+  Oposto 'Vermelho = 'Laranja
+  Oposto 'Laranja  = 'Vermelho
+
+-- Singleton que conecta o nível de tipos com o nível de valor
+data SCor (cor :: Cor) where
+  SBranco   :: SCor 'Branco
+  SAmarelo  :: SCor 'Amarelo
+  ...
+
+-- Tipo Existencial para empacotar cores lidas em tempo de execução
+data SomeCor where
+  SomeCor :: SCor cor -> SomeCor
+```
+
+#### Código 2: GADTs e Smart Constructors Seguros (`src/Cubo/Quina.hs`)
+```haskell
+-- GADT: a quina é parametrizada pelos tipos de suas 3 cores
+data Quina (c1 :: Cor) (c2 :: Cor) (c3 :: Cor) where
+  Quina :: SCor c1 -> SCor c2 -> SCor c3 -> Quina c1 c2 c3
+
+-- Smart Constructor: validação física impedindo peças impossíveis
+validarCriacaoQuina :: SCor c1 -> SCor c2 -> SCor c3 -> Either String (Quina c1 c2 c3)
+validarCriacaoQuina cor1 cor2 cor3
+  | corDoSingular cor1 == corDoSingular cor2 = Left "possui cores repetidas."
+  | ehOposto cor1 cor2 = Left "possui cores opostas e nao pode existir em uma quina."
+  | ...
+  | otherwise = Right (Quina cor1 cor2 cor3)
+
+-- Encapsulamento existencial para quinas dinâmicas
+data SomeQuina where
+  SomeQuina :: Quina c1 c2 c3 -> SomeQuina
+```
 
 ---
 
@@ -58,9 +100,40 @@
 > 2. Valida a **quiralidade 3D**, impedindo quinas espelhadas que não existem no mundo real;
 > 3. E checa a lei de conservação de rotação das peças: a soma dos *twists* das quinas módulo 3 precisa ser zero. Se alguém girar uma quina à mão no próprio eixo, o sistema detecta e recusa na hora com uma mensagem explicativa."
 
-### 🎬 Sugestões Visuais para o Vídeo:
-- **1:00 - 1:15:** Diagrama esquemático dos 8 slots espaciais (`esqTrasCima`, `dirTrasCima`, etc.) com os eixos X (Esquerda/Direita), Y (Frente/Trás) e Z (Cima/Baixo).
-- **1:15 - 1:35:** Slide ou trecho de `src/Cubo/Validacao.hs` com os 3 tópicos de validação: *Conjunto*, *Quiralidade 3D* e *Twist ($\sum \equiv 0 \pmod 3$)*.
+### 🎬 Sugestões Visuais e Códigos para os Slides:
+
+#### Código 3: Phantom Types e Estrutura dos 8 Slots (`src/Cubo/Cubo.hs`)
+```haskell
+data EstadoCubo = Embaralhado | Resolvido
+
+-- Phantom Type rastreando o estado do cubo em tempo de compilação
+data Cubo (estado :: EstadoCubo) = Cubo
+  { esqTrasCima   :: SomeQuina,
+    dirTrasCima   :: SomeQuina,
+    esqFrenteCima :: SomeQuina,
+    dirFrenteCima :: SomeQuina,
+    esqTrasBaixo  :: SomeQuina,
+    dirTrasBaixo  :: SomeQuina,
+    esqFrenteBaixo:: SomeQuina,
+    dirFrenteBaixo:: SomeQuina
+  }
+```
+
+#### Código 4: Validações Físicas e Teorema do Twist (`src/Cubo/Validacao.hs`)
+```haskell
+validarSolucionavel :: SomeCubo -> Either String ()
+validarSolucionavel cubo = do
+  validarConjuntoQuinas cubo      -- 1. Exatamente as 8 quinas canônicas únicas
+  validarQuiralidadeQuinas cubo   -- 2. Quiralidade 3D física (sem peças espelhadas)
+  validarOrientacaoQuinas cubo    -- 3. Paridade do Twist global (soma mod 3 == 0)
+
+-- Se a soma das rotações locais não for múltiplo de 3, o cubo é insolúvel
+validarOrientacaoQuinas (SomeCubo cubo) =
+  let somaOrientacoes = sum (map orientacaoQuina quinas)
+   in if somaOrientacoes `mod` 3 == 0
+        then Right ()
+        else Left ("Orientacao global invalida: soma mod 3 != 0")
+```
 
 ---
 
@@ -73,9 +146,44 @@
 >
 > No instante em que as duas fronteiras se cruzam, os caminhos são unidos e normalizados, garantindo a menor sequência de passos em fração de segundo."
 
-### 🎬 Sugestões Visuais para o Vídeo:
-- **1:35 - 1:50:** Ilustração simples dos movimentos $U$, $R$ e $F$ atuando sobre o cubo.
-- **1:50 - 2:05:** Esquema gráfico de **BFS Bidirecional** (duas árvores de busca crescendo uma em direção à outra até o ponto de encontro) + print da função `buscaBfsBidirecional` em `src/Cubo/Solver.hs`.
+### 🎬 Sugestões Visuais e Códigos para os Slides:
+
+#### Código 5: Transição e Permutação com Rotação Interna (`src/Cubo/Movimento.hs`)
+```haskell
+data Movimento = U | U' | R | R' | F | F'
+
+-- Movimento U: permuta os slots da camada superior e rotaciona as cores
+moverU :: Cubo estado -> Cubo estado
+moverU cubo = cubo
+  { dirTrasCima   = girarU (esqTrasCima cubo),
+    dirFrenteCima = girarU (dirTrasCima cubo),
+    esqFrenteCima = girarU (dirFrenteCima cubo),
+    esqTrasCima   = girarU (esqFrenteCima cubo)
+  }
+
+-- Inversos obtidos algebricamente por 3 aplicações consecutivas (X' = X^3)
+aplicarMovimento U' = moverU . moverU . moverU
+```
+
+#### Código 6: BFS Bidirecional e Ponto de Encontro (`src/Cubo/Solver.hs`)
+```haskell
+buscaBfsBidirecional :: Bool -> SomeCubo -> Maybe Solucao
+buscaBfsBidirecional comLog cuboInicial =
+  let cuboAlvo   = gerarCuboAlvo cuboInicial
+      filaFrente = Seq.singleton (cuboInicial, [])
+      filaTras   = Seq.singleton (cuboAlvo, [])
+      mapaFrente = Map.singleton (chaveEstado cuboInicial) []
+      mapaTras   = Map.singleton (chaveEstado cuboAlvo) []
+   in loop 0 filaFrente filaTras mapaFrente mapaTras
+  where
+    -- Ao encontrar um estado no mapa oposto, combina os caminhos e normaliza
+    checarEncontroFrente ((cubo, caminhoF) : _) mapT =
+      case Map.lookup (chaveEstado cubo) mapT of
+        Just caminhoT ->
+          let movs = normalizarMovimentos (reverse caminhoF ++ caminhoT)
+           in Just (Solucao movs (aplicarMovimentosSome movs cuboInicial))
+        Nothing -> ...
+```
 
 ---
 
@@ -90,10 +198,48 @@
 >
 > Esse foi o projeto! Muito obrigado pela atenção."
 
-### 🎬 Sugestões Visuais para o Vídeo:
-- **2:05 - 2:18:** Gravação de tela do terminal executando `stack run -- cubos/cubo_1.txt` com a saída formatada do solver.
-- **2:18 - 2:28:** Gravação de tela rodando `stack test` mostrando todos os testes passando em verde.
-- **2:28 - 2:30:** Slide de encerramento com agradecimento e link do repositório no GitHub.
+### 🎬 Sugestões Visuais e Códigos para os Slides:
+
+#### Código 7: Orquestração no Main e Execução CLI (`src/Lib.hs`, `app/Main.hs`)
+```haskell
+-- app/Main.hs
+module Main (main) where
+import Lib (iniciar)
+main :: IO ()
+main = iniciar
+
+-- src/Lib.hs: leitura segura e disparo do solver
+iniciar :: IO ()
+iniciar = do
+  argumentos <- getArgs
+  let caminho = case argumentos of [] -> "cubo.txt"; x : _ -> x
+  resultado <- lerCubo caminho
+  case resultado of
+    Left erro -> putStrLn ("Falha ao ler: " ++ erro)
+    Right cubo -> do
+      solucaoOuErro <- resolverCuboComLog cubo
+      case solucaoOuErro of
+        Left erro -> putStrLn ("Falha ao resolver: " ++ erro)
+        Right solucao -> do
+          putStrLn ("Movimentos: " ++ show (length (movimentosSolucao solucao)))
+          putStrLn ("Sequencia:  " ++ show (movimentosSolucao solucao))
+```
+
+#### Terminal e Testes Automatizados:
+```bash
+# Execução direta com o solver:
+$ stack run -- cubos/cubo_1.txt
+[solver] iniciando busca de solucao
+[solver] resolvido com 2 movimentos
+Sequencia: [U,U]
+
+# Suíte de testes completa cobrindo casos válidos e inválidos:
+$ stack test
+Total de arquivos testados: 8
+Testes bem-sucedidos:       8
+Testes com falha:           0
+RESULTADO: TODOS OS TESTES PASSARAM COM SUCESSO!
+```
 
 ---
 
