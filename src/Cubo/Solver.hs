@@ -175,18 +175,29 @@ normalizarMovimentos movimentos = normalizarGrupos movimentos [] Nothing 0
 normalizarGrupos :: [Movimento] -> [Movimento] -> Maybe Movimento -> Int -> [Movimento]
 normalizarGrupos [] acc Nothing _ = reverse acc
 normalizarGrupos [] acc (Just movimentoAtual) contador =
-  reverse (replicarMovimento movimentoAtual (contador `mod` 4) ++ acc)
+  reverse (converterGrupo movimentoAtual (contador `mod` 4) ++ acc)
 normalizarGrupos (movimento : resto) acc Nothing _ =
   normalizarGrupos resto acc (Just movimento) 1
 normalizarGrupos (movimento : resto) acc (Just movimentoAtual) contador
   | movimento == movimentoAtual = normalizarGrupos resto acc (Just movimentoAtual) (contador + 1)
   | otherwise =
-      let prefixo = replicarMovimento movimentoAtual (contador `mod` 4)
+      let prefixo = converterGrupo movimentoAtual (contador `mod` 4)
        in normalizarGrupos resto (reverse prefixo ++ acc) (Just movimento) 1
 
-replicarMovimento :: Movimento -> Int -> [Movimento]
-replicarMovimento _ 0 = []
-replicarMovimento movimento n = movimento : replicarMovimento movimento (n - 1)
+converterGrupo :: Movimento -> Int -> [Movimento]
+converterGrupo _ 0 = []
+converterGrupo mov 1 = [mov]
+converterGrupo mov 2 = [mov, mov]
+converterGrupo mov 3 = [movimentoAntihorario mov]
+converterGrupo _ _ = []
+
+movimentoAntihorario :: Movimento -> Movimento
+movimentoAntihorario U = U'
+movimentoAntihorario U' = U
+movimentoAntihorario R = R'
+movimentoAntihorario R' = R
+movimentoAntihorario F = F'
+movimentoAntihorario F' = F
 
 limitePassos :: Int
 limitePassos = 1000000

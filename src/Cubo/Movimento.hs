@@ -17,22 +17,31 @@ import Cubo.Quina
 
 data Movimento
   = U
+  | U'
   | R
+  | R'
   | F
+  | F'
   deriving (Eq, Ord, Show, Enum, Bounded)
 
 aplicarMovimento :: Movimento -> Cubo estado -> Cubo estado
 aplicarMovimento U = moverU
+aplicarMovimento U' = moverU . moverU . moverU
 aplicarMovimento R = moverR
+aplicarMovimento R' = moverR . moverR . moverR
 aplicarMovimento F = moverF
+aplicarMovimento F' = moverF . moverF . moverF
 
 aplicarMovimentoSome :: Movimento -> SomeCubo -> SomeCubo
 aplicarMovimentoSome mov (SomeCubo cubo) = SomeCubo (aplicarMovimento mov cubo)
 
 aplicarMovimentoInverso :: Movimento -> Cubo estado -> Cubo estado
 aplicarMovimentoInverso U = moverU . moverU . moverU
+aplicarMovimentoInverso U' = moverU
 aplicarMovimentoInverso R = moverR . moverR . moverR
+aplicarMovimentoInverso R' = moverR
 aplicarMovimentoInverso F = moverF . moverF . moverF
+aplicarMovimentoInverso F' = moverF
 
 aplicarMovimentoInversoSome :: Movimento -> SomeCubo -> SomeCubo
 aplicarMovimentoInversoSome mov (SomeCubo cubo) = SomeCubo (aplicarMovimentoInverso mov cubo)
