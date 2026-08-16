@@ -158,9 +158,12 @@ O `src/Cubo/Solver.hs` utiliza uma **Busca em Largura Bidirecional (*Bidirection
 
 ## 🎨 Visualizador 3D em Python
 
-O repositório inclui o utilitário [`cube_viewer.py`](cube_viewer.py), que renderiza o cubo tridimensionalmente com Matplotlib:
+O repositório inclui o utilitário [`cube_viewer.py`](cube_viewer.py), que renderiza o cubo tridimensionalmente com Matplotlib. Suas dependências podem ser instaladas via [`requirements.txt`](requirements.txt):
 
 ```bash
+# Instalar dependências do visualizador
+pip install -r requirements.txt
+
 # Visualizar o cubo interativamente em janela 3D
 python cube_viewer.py cubos/cubo_1.txt
 ```
@@ -296,6 +299,7 @@ haskell-cube-solver/
 ├── test/
 │   └── Spec.hs                 # Suíte de testes automatizados (stack test)
 ├── cube_viewer.py              # Visualizador e renderizador 3D em Python/Matplotlib
+├── requirements.txt            # Dependências Python do visualizador
 ├── haskell-cube-solver.cabal   # Configuração Cabal do pacote
 ├── stack.yaml                  # Configuração do Stack
 └── README.md                   # Documentação completa do projeto

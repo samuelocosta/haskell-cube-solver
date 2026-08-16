@@ -183,7 +183,7 @@ def render_cube_from_txt(txt_path, output_path=None):
     ax.set_zticks([-1, 1])
     ax.set_zticklabels(["Baixo", "Cima"])
 
-    # Visão isométrica limpa e elegante mostrando Frente, Direita e Cima
+    # Visão isométrica limpa
     ax.view_init(elev=25, azim=-135)
     ax.set_title(f"Visualizador 3D: {Path(txt_path).name}", fontsize=14, pad=15)
 

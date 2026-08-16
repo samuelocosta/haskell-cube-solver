@@ -1,0 +1,2 @@
+# Dependências para o script auxiliar de visualização 3D (cube_viewer.py)
+matplotlib>=3.5.0
