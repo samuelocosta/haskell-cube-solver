@@ -1,0 +1,8 @@
+Laranja Azul Branco
+Vermelho Azul Branco
+Laranja Verde Branco
+Verde Branco Vermelho
+Laranja Azul Amarelo
+Vermelho Azul Amarelo
+Laranja Verde Amarelo
+Vermelho Verde Amarelo
