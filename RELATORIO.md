@@ -4,7 +4,7 @@
 **Projeto:** `haskell-cube-solver`  
 **Autor:** Samuel Oliveira Costa  
 **RA:** 11202510049  
-**Link Youtube:** []()  
+**Link Youtube:** [https://youtu.be/a4dcriTR0Lk](https://youtu.be/a4dcriTR0Lk)  
 
 ---
 
