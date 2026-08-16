@@ -39,6 +39,9 @@ stack run -- cubos/cubo_2.txt
 stack test
 
 # 4. Visualização gráfica 3D (script auxiliar em Python/Matplotlib)
+# Instalar dependências do visualizador
+pip install -r requirements.txt
+# Visualizar o cubo interativamente em janela 3D
 python cube_viewer.py cubos/cubo_1.txt
 ```
 
