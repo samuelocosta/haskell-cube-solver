@@ -1,4 +1,4 @@
-# Relatório Técnico: Solucionador Tipado de Cubo Mágico 2x2
+# Relatório: Solucionador Tipado de Cubo Mágico 2x2
 
 **Disciplina:** Desenvolvimento Guiado por Tipos (Haskell)  
 **Projeto:** `haskell-cube-solver`  
@@ -13,10 +13,10 @@
 O **haskell-cube-solver** é um motor formal e solucionador (*solver*) para o **Cubo Mágico 2x2x2 (Pocket Cube)** desenvolvido em Haskell, aplicando os conceitos de **Desenvolvimento Guiado por Tipos**.
 
 O objetivo principal foi modelar regras físicas e matemáticas do cubo diretamente no sistema de tipos do GHC:
-- **`DataKinds` e `TypeFamilies`:** Promoção das 6 cores para o nível de tipos e mapeamento de faces opostas (`Oposto`).
-- **`GADTs` e `Singletons`:** Construção segura de quinas válidas (`Quina c1 c2 c3`) via *smart constructors*, impedindo peças com cores repetidas ou opostas.
+- **DataKinds e TypeFamilies:** Promoção das 6 cores para o nível de tipos e mapeamento de faces opostas (`Oposto`).
+- **GADTs e Singletons:** Construção segura de quinas válidas (`Quina c1 c2 c3`) via *smart constructors*, impedindo peças com cores repetidas ou opostas.
 - **Tipos Existenciais (`SomeCor`, `SomeQuina`, `SomeCubo`):** Ponte segura entre a leitura de arquivos de texto em tempo de execução (`IO`) e o motor estritamente tipado.
-- **`Phantom Types`:** Rastreamento do estado estrutural do cubo (`Cubo 'Embaralhado` vs. `Cubo 'Resolvido`).
+- **Phantom Types:** Rastreamento do estado estrutural do cubo (`Cubo 'Embaralhado` vs. `Cubo 'Resolvido`).
 - **Validação Algébrica:** Checagem de conjunto canônico, quiralidade 3D (peças não espelhadas) e paridade de *twist* ($\sum \text{twist} \equiv 0 \pmod 3$).
 - **Solver BFS Bidirecional:** Algoritmo que encontra a menor sequência de rotações ($U, R, F$ e inversos) expandindo simultaneamente a partir do estado inicial e do estado resolvido alvo.
 
@@ -27,21 +27,17 @@ O objetivo principal foi modelar regras físicas e matemáticas do cubo diretame
 O gerenciamento de compilação, execução e testes é feito via **Stack**:
 
 ```bash
-# 1. Compilar o projeto
-stack build
+# Caso ainda não tenha sido compilado
+stack build 
 
-# 2. Resolver um cubo específico (passando o arquivo como argumento)
-stack run -- cubos/cubo_1.txt
-stack run -- cubos/cubo_2.txt
-# (Nota: executar apenas 'stack run' tentará carregar o arquivo 'cubo.txt' na raiz)
+# Resolve um cubo específico (passando o arquivo como argumento)
+stack run -- cubos/cubo_3.txt   # (Nota: executar apenas 'stack run' tentará carregar o arquivo 'cubo.txt' na raiz)
 
-# 3. Rodar a bateria de testes automatizados
+# Rodar a bateria de testes automatizados
 stack test
 
-# 4. Visualização gráfica 3D (script auxiliar em Python/Matplotlib)
-# Instalar dependências do visualizador
+# Visualização gráfica 3D (script auxiliar em Python/Matplotlib)
 pip install -r requirements.txt
-# Visualizar o cubo interativamente em janela 3D
 python cube_viewer.py cubos/cubo_1.txt
 ```
 
